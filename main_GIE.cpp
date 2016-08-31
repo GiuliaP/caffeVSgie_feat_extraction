@@ -48,50 +48,6 @@ int main(int argc, char **argv)
 {
 
 	////////////////////////////////////////////////////////////////////////////////
-	// CUDA Setup
-	////////////////////////////////////////////////////////////////////////////////
-
-	pArgc = &argc;
-	pArgv = argv;
-
-	printf("%s Starting...\n\n", argv[0]);
-	printf(" CUDA Device Query (Runtime API) version (CUDART static linking)\n\n");
-
-	int deviceCount = 0;
-	cudaError_t error_id = cudaGetDeviceCount(&deviceCount);
-
-	if (error_id != cudaSuccess)
-	{
-		printf("cudaGetDeviceCount returned %d\n-> %s\n", (int)error_id, cudaGetErrorString(error_id));
-		printf("Result = FAIL\n");
-		exit(EXIT_FAILURE);
-	}
-
-	// This function call returns 0 if there are no CUDA capable devices.
-	if (deviceCount == 0)
-	{
-		printf("There are no available device(s) that support CUDA\n");
-	}
-	else
-	{
-		printf("Detected %d CUDA Capable device(s)\n", deviceCount);
-	}
-
-	int dev, driverVersion = 0, runtimeVersion = 0;
-
-	for (dev = 0; dev < deviceCount; ++dev)
-	{
-		cudaSetDevice(dev);
-		cudaDeviceProp deviceProp;
-		cudaGetDeviceProperties(&deviceProp, dev);
-
-		printf("\nDevice %d: \"%s\"\n", dev, deviceProp.name);
-
-		// Console log
-
-	}
-
-	////////////////////////////////////////////////////////////////////////////////
 	// Initialization
 	////////////////////////////////////////////////////////////////////////////////
 
@@ -122,16 +78,16 @@ int main(int argc, char **argv)
     meanR.push_back(123);
  
 	// Image dir
-	string dset_dir = "iCWU_cc256";
-	string image_dir = "/data/giulia/ICUBWORLD_ULTIMATE/" + dset_dir;
+	string dset_dir = "images2";
+	string image_dir = "/home/ubuntu/giulia/REPOS/caffe_feat_extraction/" + dset_dir;
 
 	// Registries
-	string registry_file = "/home/icub/giulia/REPOS/caffe_feat_extraction/registries/prova.txt";
+	string registry_file = "/home/ubuntu/giulia/REPOS/caffe_feat_extraction/registries/images2.txt";
 
 	// Output dirs
 	vector <string> out_dir_gie;
-	out_dir_gie.push_back("/data/giulia/GIEvsCaffe/GIE/caffenet");
-    out_dir_gie.push_back("/data/giulia/GIEvsCaffe/GIE/googlenet");
+	out_dir_gie.push_back("/home/ubuntu/giulia/GIEvsCaffe/GIE/caffenet/images2");
+    out_dir_gie.push_back("/home/ubuntu/giulia/GIEvsCaffe/GIE/googlenet/images2");
 	
 	// Names of layers to be extracted
 	vector<string> blob_names_gie;
@@ -158,6 +114,7 @@ int main(int argc, char **argv)
 		infile.open (registry_file.c_str());
 		infile >> line;
 		infile >> label;
+        cout << "here" << endl;
 		while(!infile.eof())
 		{
 			registry.push_back(line);
@@ -205,16 +162,4 @@ int main(int argc, char **argv)
 
 	}
 
-	// CUDA cleanup
-
-	// cudaDeviceReset causes the driver to clean up all state. While
-	// not mandatory in normal operation, it is good practice.  It is also
-	// needed to ensure correct operation when the application is being
-	// profiled. Calling cudaDeviceReset causes all profile data to be
-	// flushed before the application exits
-	cout << endl <<  "done!" << endl;
-
-	cudaDeviceReset();
-
-	exit(EXIT_SUCCESS);
 }

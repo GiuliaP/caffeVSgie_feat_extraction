@@ -95,8 +95,7 @@ int main(int argc, char **argv)
 	// Initialization
 	////////////////////////////////////////////////////////////////////////////////
 
-	CaffeFeatExtractor<double> *caffe_extractor;
-	GIEFeatExtractor *gie_extractor;
+	CaffeFeatExtractor<float> *caffe_extractor;
 
 	// .caffemodel containing the pretrained network's weights
 	vector <string> caffemodel_file;
@@ -105,8 +104,8 @@ int main(int argc, char **argv)
 
 	// .prototxt defining the network structure
 	vector <string> prototxt_file_caffe;
-	prototxt_file_caffe.push_back("/home/icub/giulia/REPOS/caffe_feat_extraction/networks/blvc_reference_caffenet_val_cutfc6.prototxt");
-	prototxt_file_caffe.push_back("/home/icub/giulia/REPOS/caffe_feat_extraction/networks/blvc_googlenet_val_cutpool5.prototxt");
+	prototxt_file_caffe.push_back("/home/ubuntu/giulia/REPOS/caffe_feat_extraction/networks/bvlc_reference_caffenet_val_cutfc6.prototxt");
+	prototxt_file_caffe.push_back("/home/ubuntu/giulia/REPOS/caffe_feat_extraction/networks/bvlc_googlenet_val_cutpool5.prototxt");
 	
     // mean info
     vector<string> binaryproto_meanfile;
@@ -123,17 +122,16 @@ int main(int argc, char **argv)
     meanR.push_back(123);
  
 	// Image dir
-	string dset_dir = "iCWU_cc256";
-	string image_dir = "/data/giulia/ICUBWORLD_ULTIMATE/" + dset_dir;
+	string dset_dir = "images2";
+	string image_dir = "/home/ubuntu/giulia/REPOS/caffe_feat_extraction/" + dset_dir;
 
 	// Registries
-	vector <string> registry_files;
-	registry_files.push_back("/home/icub/giulia/REPOS/caffe_feat_extraction/registries/prova.txt");
+	string registry_file = "/home/ubuntu/giulia/REPOS/caffe_feat_extraction/registries/images2.txt";
 
 	// Output dirs
 	vector <string> out_dir_caffe;
-	out_dir_caffe.push_back("/data/giulia/GIEvsCaffe/Caffe/caffenet");
-	out_dir_caffe.push_back("/data/giulia/GIEvsCaffe/Caffe/googlenet");
+	out_dir_caffe.push_back("/home/ubuntu/giulia/GIEvsCaffe/Caffe/caffenet/images2");
+	out_dir_caffe.push_back("/home/ubuntu/giulia/GIEvsCaffe/Caffe/googlenet/images2");
 
 	// Names of layers to be extracted
 	vector<string> blob_names_caffe;
@@ -155,19 +153,21 @@ int main(int argc, char **argv)
 
 		// declare classes
 
-	    caffe_extractor = new CaffeFeatExtractor<float>(caffemodel_file_caffe,
-				prototxt_file_caffe[m],
+	    caffe_extractor = new CaffeFeatExtractor<float>(caffemodel_file[m],
+				prototxt_file_caffe[m], 256, 256,
 				blob_names_caffe[m],
 				compute_mode,
 				device_id,
 				timing);
 
 		// read registry
+        
+        cout << "here" << endl;
 
 		vector<string> registry;
 		ifstream infile;
 		string line, label;
-		infile.open (registry_files[m].c_str());
+		infile.open (registry_file.c_str());
 		infile >> line;
 		infile >> label;
 		while(!infile.eof())
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
 				string image_path = image_dir + "/" + registry[i];
 
 				cv::Mat img = cv::imread(image_path);
-				int times_caffe[2];
+				float times_caffe[2];
 				std::vector<float> codingVec_caffe;
 				caffe_extractor->extract_singleFeat_1D(img, codingVec_caffe, times_caffe);
 		

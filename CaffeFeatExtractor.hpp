@@ -15,22 +15,8 @@
 #include "boost/make_shared.hpp"
 
 // Caffe
-
-#include "caffe-version.h"
-
-#if (CAFFE_MAJOR >= 1)
-    // new caffe headers
-    #include "caffe/caffe.hpp"
-    #include "caffe/layers/memory_data_layer.hpp"
-#else
-    // old caffe headers
-    #include "caffe/blob.hpp"
-    #include "caffe/common.hpp"
-    #include "caffe/net.hpp"
-    #include "caffe/proto/caffe.pb.h"
-    #include "caffe/util/io.hpp"
-    #include "caffe/vision_layers.hpp"
-#endif
+#include "caffe/caffe.hpp"
+#include "caffe/layers/memory_data_layer.hpp"
 
 using namespace std;
 using namespace caffe;
@@ -122,16 +108,11 @@ CaffeFeatExtractor<Dtype>::CaffeFeatExtractor(string _caffemodel_file,
 
     // Network creation using the specified .prototxt
     feature_extraction_net = boost::make_shared<Net<Dtype> > (prototxt_file, caffe::TEST);
-
-    // Network initialization using the specified .caffemodel
+       // Network initialization using the specified .caffemodel
     feature_extraction_net->CopyTrainedLayersFrom(caffemodel_file);
 
     // Mean image initialization
-
-    mean_width = 0;
-    mean_height = 0;
-    mean_channels = 0;
-
+    
     caffe::shared_ptr<MemoryDataLayer<Dtype> > memory_data_layer = boost::dynamic_pointer_cast<caffe::MemoryDataLayer<Dtype> >(feature_extraction_net->layers()[0]);
 
     TransformationParameter tp = memory_data_layer->layer_param().transform_param();

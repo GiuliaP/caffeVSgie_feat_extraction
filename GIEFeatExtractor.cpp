@@ -163,8 +163,8 @@ bool GIEFeatExtractor::init(string _caffemodel_file, string _binaryproto_meanfil
         return -1;
     }
 
-    if ( CUDA_FAILED( cudaSetDeviceFlags(cudaDeviceMapHost)) )
-        return -1;
+    //if ( CUDA_FAILED( cudaSetDeviceFlags(cudaDeviceMapHost)) )
+    //    return -1;
 
     // Assign specified .caffemodel, .binaryproto, .prototxt files     
     caffemodel_file  = _caffemodel_file;
@@ -260,6 +260,8 @@ bool GIEFeatExtractor::init(string _caffemodel_file, string _binaryproto_meanfil
         meanBlob->destroy();
 
         cv::Mat tmpMat(resizeDims.h, resizeDims.w, CV_32FC3, meanDataChangeable);
+        cv::cvtColor(tmpMat, tmpMat, CV_RGB2BGR);
+        std::cout << "converted" << std::endl;
         tmpMat.copyTo(meanMat);
 
         free(meanDataChangeable);
@@ -297,15 +299,15 @@ GIEFeatExtractor::~GIEFeatExtractor()
 bool GIEFeatExtractor::extract_singleFeat_1D(cv::Mat &imMat, vector<float> &features, float (&times)[2])
 {
 
+    times[0] = 0.0f;
+    times[1] = 0.0f;
+
     // Check input image 
     if (imMat.empty())
 	{
 		std::cout << "GIEFeatExtractor::extract_singleFeat_1D(): empty imMat!" << std::endl;
 		return -1;
 	}
-
-    times[0] = 0.0f;
-    times[1] = 0.0f;
 
     // Start timing
     cudaEvent_t startPrep, stopPrep, startNet, stopNet;
@@ -343,6 +345,7 @@ bool GIEFeatExtractor::extract_singleFeat_1D(cv::Mat &imMat, vector<float> &feat
         if (!meanMat.empty() && imMat.rows==meanMat.rows && imMat.cols==meanMat.cols && imMat.channels()==meanMat.channels() && imMat.type()==meanMat.type())
         {
             imMat = imMat - meanMat;
+            std::cout << imMat.cols << " " << mWidth << std::endl;
         }
         else
         {
@@ -352,15 +355,20 @@ bool GIEFeatExtractor::extract_singleFeat_1D(cv::Mat &imMat, vector<float> &feat
     }
     else
     {  
-        imMat = imMat - cv::Scalar(meanR, meanG, meanB);
+        imMat = imMat - cv::Scalar(meanB, meanG, meanR);
+        std::cout << "B" << meanB << "  G" << meanG << "  R" << meanR << std::endl;
     }
 
     // crop to input dimension (central crop)
     if (imMat.cols>=mWidth && imMat.rows>=mHeight)
     {
-        cv::Rect imROI(floor((imMat.cols-mWidth)*0.5f), floor((imMat.rows-mHeight)*0.5f), mWidth, mHeight);
+        std::cout << imMat.cols << " " << mWidth << std::endl;
+        std::cout << imMat.rows << " " << mHeight << std::endl;
+        std::cout << floor((imMat.cols-mWidth)*0.5f)+1 << " " << floor((imMat.rows-mHeight)*0.5f)+1 << std::endl;
+        cv::Rect imROI(floor((imMat.cols-mWidth)*0.5f)+1, floor((imMat.rows-mHeight)*0.5f)+1, mWidth, mHeight);
         imMat(imROI).copyTo(imMat);
-    } else
+    } 
+        else
     {
         cv::resize(imMat, imMat, cv::Size(mHeight, mWidth), 0, 0, CV_INTER_LINEAR);
     }
@@ -369,8 +377,8 @@ bool GIEFeatExtractor::extract_singleFeat_1D(cv::Mat &imMat, vector<float> &feat
           imMat = imMat.clone();
 
     // copy 
-    CUDA( cudaMemcpy(mInputCPU, imMat.data, mInputSize, cudaMemcpyDefault) );
-    // memcpy(mInputCPU, imMat.data);
+    //CUDA( cudaMemcpy(mInputCPU, imMat.data, mInputSize, cudaMemcpyDefault) );
+    memcpy(mInputCPU, imMat.data, mInputSize);
 
 	void* inferenceBuffers[] = { mInputCUDA, mOutputCUDA };
 
