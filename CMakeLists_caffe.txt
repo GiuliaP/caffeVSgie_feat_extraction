@@ -9,9 +9,8 @@ project(${PROJECTNAME})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
-# GIE
-set(GIE_PATH "$ENV{ROBOT_CODE}/GIE" CACHE FILEPATH "Path to GPU Inference Engine")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")	# -std=gnu++11
+# Caffe
+find_package(Caffe REQUIRED)
 
 # OpenCV
 find_package(OpenCV REQUIRED)
@@ -29,24 +28,25 @@ list(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_35,code=sm_35)
 list(APPEND CUDA_NVCC_FLAGS -gencode arch=compute_53,code=sm_53)
 list(APPEND CUDA_NVCC_FLAGS -std=c++11 -O3)
 
-# GIE
-include_directories(${GIE_PATH}/include)
-link_directories(${GIE_PATH}/lib)
+# Caffe
+include_directories(${Caffe_INCLUDE_DIRS})
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${Boost_INCLUDE_DIRS}) 
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-set(folder_source main_GIE.cpp GIEFeatExtractor.cpp)
-set(folder_header GIEFeatExtractor.h cudaUtility.h)
+add_definitions(${Caffe_DEFINITIONS})    # ex. -DCPU_ONLY
+
+set(folder_source main_caffe.cpp)
+set(folder_header CaffeFeatExtractor.hpp)
 source_group("Source Files" FILES ${folder_source})
 source_group("Header Files" FILES ${folder_header})
 
 cuda_add_executable(${PROJECTNAME} ${folder_source} ${folder_header})
 
-# GIE
-target_link_libraries(${PROJECTNAME} nvcaffe_parser nvinfer)
+# Caffe
+target_link_libraries(${PROJECTNAME} ${Caffe_LIBRARIES})
 
 target_link_libraries(${PROJECTNAME} ${OpenCV_LIBRARIES})
 target_link_libraries(${PROJECTNAME} ${Boost_LIBRARIES})
