@@ -1,0 +1,16 @@
+cellphone/cellphone1/MIX/day3/left/00000578.jpg 0
+cellphone/cellphone1/MIX/day3/left/00000614.jpg 0
+cellphone/cellphone1/MIX/day3/left/00000653.jpg 0
+cellphone/cellphone1/MIX/day3/left/00000687.jpg 0
+cellphone/cellphone1/MIX/day3/left/00000722.jpg 0
+cellphone/cellphone1/MIX/day3/left/00000792.jpg 0
+cellphone/cellphone1/MIX/day3/left/00000827.jpg 0
+cellphone/cellphone1/MIX/day3/left/00000863.jpg 0
+cellphone/cellphone1/MIX/day3/left/00000895.jpg 0
+cellphone/cellphone1/MIX/day4/left/00001485.jpg 0
+cellphone/cellphone1/MIX/day4/left/00001519.jpg 0
+cellphone/cellphone1/MIX/day4/left/00001571.jpg 0
+cellphone/cellphone1/MIX/day4/left/00001613.jpg 0
+cellphone/cellphone1/MIX/day4/left/00001654.jpg 0
+cellphone/cellphone1/MIX/day4/left/00001691.jpg 0
+cellphone/cellphone1/MIX/day4/left/00001733.jpg 0
