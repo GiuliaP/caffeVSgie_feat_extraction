@@ -10,6 +10,10 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
+// Boost
+#include "boost/algorithm/string.hpp"
+#include "boost/make_shared.hpp"
+
 // Caffe
 #include "caffe/caffe.hpp"
 #include "caffe/layers/memory_data_layer.hpp"
@@ -29,7 +33,7 @@ class CaffeFeatExtractor {
     int mean_height;
     int mean_channels;
 
-    vector<string> blob_names;
+    string blob_name;
 
     bool gpu_mode;
     int device_id;
@@ -51,7 +55,7 @@ public:
 template <class Dtype>
 CaffeFeatExtractor<Dtype>::CaffeFeatExtractor(string _caffemodel_file,
         string _prototxt_file, int _resizeWidth, int _resizeHeight,
-        string _blob_names,
+        string _blob_name,
         string _compute_mode,
         int _device_id,
         bool _timing) {
@@ -135,6 +139,7 @@ CaffeFeatExtractor<Dtype>::CaffeFeatExtractor(string _caffemodel_file,
 
     // Initialize timing flag
     timing = _timing;
+    blob_name = _blob_name;
 
 }
 
@@ -208,13 +213,6 @@ bool CaffeFeatExtractor<Dtype>::extract_singleFeat_1D(cv::Mat &image, vector<Dty
 
     memory_data_layer->AddMatVector(vector<cv::Mat>(1, image),vector<int>(1,label));
 
-    size_t num_features = blob_names.size();
-    if(num_features!=1)
-    {
-        std::cout << "CaffeFeatExtractor::extract_singleFeat_1D(): Error! The list of features to be extracted has not size one!" << std::endl;
-        return false;
-    }
-
     if (timing)
     {
         // Record the stop event
@@ -232,7 +230,7 @@ bool CaffeFeatExtractor<Dtype>::extract_singleFeat_1D(cv::Mat &image, vector<Dty
     // depending on your net's architecture, the blobs will hold accuracy and/or labels, etc
     std::vector<Blob<Dtype>*> results = feature_extraction_net->Forward();
 
-    const caffe::shared_ptr<Blob<Dtype> > feature_blob = feature_extraction_net->blob_by_name(blob_names[0]);
+    const caffe::shared_ptr<Blob<Dtype> > feature_blob = feature_extraction_net->blob_by_name(blob_name);
 
     int batch_size = feature_blob->num(); // should be 1
     if (batch_size!=1)
