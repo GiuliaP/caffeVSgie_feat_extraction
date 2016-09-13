@@ -100,12 +100,12 @@ int main(int argc, char **argv)
 	// .caffemodel containing the pretrained network's weights
 	vector <string> caffemodel_file;
 	caffemodel_file.push_back("/usr/local/src/robot/caffe/models/bvlc_reference_caffenet/bvlc_reference_caffenet.caffemodel");
-	caffemodel_file.push_back("/usr/local/src/robot/caffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel");
+    caffemodel_file.push_back("/usr/local/src/robot/caffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel");
 
 	// .prototxt defining the network structure
 	vector <string> prototxt_file_caffe;
-	prototxt_file_caffe.push_back("/home/ubuntu/giulia/REPOS/caffe_feat_extraction/networks/bvlc_reference_caffenet_val_cutfc6.prototxt");
-	prototxt_file_caffe.push_back("/home/ubuntu/giulia/REPOS/caffe_feat_extraction/networks/bvlc_googlenet_val_cutpool5.prototxt");
+    prototxt_file_caffe.push_back("/usr/local/src/robot/caffeVSgie_feat_extraction/networks/bvlc_reference_caffenet_val_cutfc6.prototxt");
+    prototxt_file_caffe.push_back("/usr/local/src/robot/caffeVSgie_feat_extraction/networks/bvlc_googlenet_val_cutpool5.prototxt");
 	
     // mean info
     vector<string> binaryproto_meanfile;
@@ -123,15 +123,15 @@ int main(int argc, char **argv)
  
 	// Image dir
 	string dset_dir = "images2";
-	string image_dir = "/home/ubuntu/giulia/REPOS/caffe_feat_extraction/" + dset_dir;
+    string image_dir = "/usr/local/src/robot/caffeVSgie_feat_extraction/" + dset_dir;
 
 	// Registries
-	string registry_file = "/home/ubuntu/giulia/REPOS/caffe_feat_extraction/registries/images2.txt";
+    string registry_file = "/usr/local/src/robot/caffeVSgie_feat_extraction/registries/images2.txt";
 
 	// Output dirs
 	vector <string> out_dir_caffe;
-	out_dir_caffe.push_back("/home/ubuntu/giulia/GIEvsCaffe/Caffe/caffenet/images2");
-	out_dir_caffe.push_back("/home/ubuntu/giulia/GIEvsCaffe/Caffe/googlenet/images2");
+    out_dir_caffe.push_back("/home/ubuntu/giulia/GIEvsCaffe/Caffe/caffenet/images2");
+    out_dir_caffe.push_back("/home/ubuntu/giulia/GIEvsCaffe/Caffe/googlenet/images2");
 
 	// Names of layers to be extracted
 	vector<string> blob_names_caffe;

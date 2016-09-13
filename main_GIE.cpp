@@ -78,11 +78,10 @@ int main(int argc, char **argv)
     meanR.push_back(123);
  
 	// Image dir
-	string dset_dir = "images2";
-	string image_dir = "/home/ubuntu/giulia/REPOS/caffe_feat_extraction/" + dset_dir;
+	string image_dir = "/usr/local/src/robot/caffeVSgie_feat_extraction/images2";
 
 	// Registries
-	string registry_file = "/home/ubuntu/giulia/REPOS/caffe_feat_extraction/registries/images2.txt";
+	string registry_file = "/usr/local/src/robot/caffeVSgie_feat_extraction/registries/images2.txt";
 
 	// Output dirs
 	vector <string> out_dir_gie;
@@ -114,7 +113,6 @@ int main(int argc, char **argv)
 		infile.open (registry_file.c_str());
 		infile >> line;
 		infile >> label;
-        cout << "here" << endl;
 		while(!infile.eof())
 		{
 			registry.push_back(line);
